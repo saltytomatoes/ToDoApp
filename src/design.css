@@ -47,6 +47,7 @@ header span:hover {
 
 hr {
     width: 90%;
+    margin-top: 0;
 }
 
 
@@ -60,6 +61,13 @@ hr {
 
 .subdiv h1 {
     text-align: center;
+}
+
+.notTxt {
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
 }
 
 #mainHolder {
@@ -78,6 +86,43 @@ hr {
     margin: 1% 0 1% 1%;
 }
 
+#addProjectBtn {
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    background-color: var(--neonblue);
+    align-self: center;
+    text-align: center;
+    line-height: 30px;
+    font-size: 35px;
+    cursor:default;
+    transition: .1s;
+    margin-right: 10%;
+}
+
+#addProjectBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 13px var(--neonblue);
+}
+
+#addProjectBtn:active {
+    transform: scale(1);
+}
+
+#projectHolder .topBar {
+    display: flex;
+    justify-content: space-between;
+}
+
+#projectHolder h1 {
+    margin-left: 10%;
+}
+
+
+
+
+
+
 .subdiv .title {
     text-align: center;
     color: var(--neonblue);
@@ -91,3 +136,11 @@ hr {
     border-radius: 20px;
 }
 
+.project {
+    height: 60px;
+    width: 90%;
+    margin: auto;
+    background-color: white;
+    border-radius: 10px;
+    margin-top: 20px;
+}
