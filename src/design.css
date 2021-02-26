@@ -3,7 +3,57 @@ html , body {
     padding: 0;
 }
 
+:root {
+    --neonblue: #15f4ee;
+    --vampire: #1b2139;
+}
+
+
 body {
     overflow-x: hidden;
     width: 100vw;
+
+    background-color: var(--vampire);
+}
+
+
+
+header {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+
+    text-align: center;
+    font-size:  30px;
+    font-family: 'Anton', sans-serif;
+
+    background-color: var(--vampire);
+    color: var(--neonblue);
+}
+
+span {
+    transition: .2s;
+}
+
+header span:hover {
+    font-size: 34px;
+    text-shadow: 0 0 13px var(--neonblue);
+}
+
+
+
+#mainHolder {
+    width: 95%;
+    min-height: 600px;
+    margin: auto;
+    border-radius: 20px;
+    background-color: white;
+    display: flex;
+}
+
+#projectHolder {
+    width: 33%;
+    background-color: var(--vampire);
+    border-radius: 20px;
+    margin: 1% 0 1% 1%;
 }
