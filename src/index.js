@@ -5,29 +5,21 @@ const InitialContent = (function () {
     const Content = document.querySelector("#Content");
 
     const header = `<header>
-                        <span>J</span>
-                        <span>u</span>
-                        <span>s</span>
-                        <span>t</span>&nbsp&nbsp
-                        <span>F</span>
-                        <span>*</span>
-                        <span>c</span>
-                        <span>k</span>
-                        <span>i</span>
-                        <span>n</span>
-                        <span>g</span>&nbsp&nbsp
-                        <span>D</span>
-                        <span>o</span>&nbsp&nbsp
-                        <span>I</span>
-                        <span>t</span>
+                        <span>Just</span> <span>F*cking</span> <span>Do</span> <span>It</span>
                     </header>`;
                     
-    const projectHolder = `<div id="projectHolder">
-                            
+    const projectHolder = `<div id="projectHolder" class="subdiv">
+                            <h1 class="title">Projects</h1>
+                            <hr>
                           </div>`;
 
+    const projectMonitor = `<div id="projectMonitor" class="subdiv">
+                                <h1 class="title">--proj name--</h1>
+                                <hr>
+                            </div>`;
     const mainHolder = `<div id="mainHolder">
                           ${projectHolder}
+                          ${projectMonitor}
                         </div>`;
 
 
