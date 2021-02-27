@@ -62,4 +62,77 @@ const InitializeView = (function () {
 // 
 const App = (function () {
 
+    class List {
+        constructor(name) {
+            this.name = name;
+            this.components = [];
+
+        }
+
+        getTaskAmount = () => {
+            let amount = 0;
+            this.components.forEach(component => {
+                //in case the component is of type section
+                if(component.constructor == Section) 
+                    amount += component.getTaskAmount();
+                
+                if(component.constructor == Task)
+                    amount++;
+            });
+            return amount;
+        }
+
+        addComponent = (component) => {
+            this.components.push(component);
+        }
+    }////////////////
+
+
+    class Project extends List {
+        constructor(name) {
+            super(name);
+            this.dom = this._createProjectDom();
+        }
+
+        // returns a project representation div.
+        _createProjectDom= () => {
+            let main = strToHtml(`<div class="project"></div>`);
+        
+            let projectName = strToHtml(`<h2>${this.name}</h2>`);
+            let tasksInside = strToHtml(`<div class="tasksInside"></div>`);
+    
+            main.appendChild(projectName);
+            main.appendChild(tasksInside);
+                
+            return main;
+        }
+    }
+
+
+    class Section extends List {
+        constructor(name) {
+            super(name);
+        }
+    }
+
+    class Task {
+        constructor(title,description,project,deadline) {
+            this.title = title;
+            this.description = description;
+            this.project = project;
+            this.deadline = deadline;
+            this.isDone = false;
+        }
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    InitializeView.projectHolder.appendChild(new Project("jack").dom);
+
 })();
