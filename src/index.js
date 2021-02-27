@@ -62,17 +62,4 @@ const InitializeView = (function () {
 // 
 const App = (function () {
 
-    function Project(name) {
-        this.name = name;
-        this.dom = strToHtml(`<div class="project">${this.name}</div>`);
-
-        return this.dom;
-    }
-
-    InitializeView.projectHolder.appendChild(new Project("hello test"));
-    InitializeView.projectHolder.appendChild(new Project("hello"));
-    InitializeView.projectHolder.appendChild(new Project(" test"));
-
-
-
 })();
