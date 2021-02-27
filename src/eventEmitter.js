@@ -29,11 +29,13 @@ class EventEmitter {
         }
     }
 
+
+    
     //triggering an event 
-    emit = (keyWord) => {
+    emit = (keyWord,...args) => {
         for(let i = 0; i < this.#_eventlist.length; i++) {
             if(this.#_eventlist[i].keyWord == keyWord) {
-                this.#_eventlist[i].f();
+                this.#_eventlist[i].f(...args);
                 return;
             }
         }

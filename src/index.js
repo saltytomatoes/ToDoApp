@@ -64,9 +64,19 @@ const App = (function () {
 
     let eventEmitter = new EventEmitter("CombineHolderAndDisplayer");
 
+    //new project is created
+    eventEmitter.on("CREATE_PROJECKT",() => {
+        InitializeView.projectHolder.appendChild(new Project().dom);
+    });
+
+    //a project is selected to be displayed
+    eventEmitter.on("LOAD",(project) => {
+        console.log(project.name + " is loaded!");
+    });
+
     class List {
-        constructor(name) {
-            this.name = name;
+        constructor() {
+            this.name;
             this.components = [];
 
         }
@@ -96,8 +106,8 @@ const App = (function () {
     }
 
     class Project extends List {
-        constructor(name) {
-            super(name);
+        constructor() {
+            super();
 
             this.dom = this._createProjectDom();
             this.dom.addEventListener("click",this.loadProject);
@@ -107,10 +117,13 @@ const App = (function () {
         _createProjectDom= () => {
             let main = strToHtml(`<div class="project"></div>`);
         
+
             let projectName = strToHtml(`<input type="text" placeholder="Choose a name"></input>`);
+            //The name is changable 
             projectName.addEventListener("blur",(e)=>{
-                console.log(e.target.value)
+                this.name = e.target.value;
             });
+
 
             let tasksInside = strToHtml(`<div class="tasksInside"></div>`);
     
@@ -126,13 +139,13 @@ const App = (function () {
         }
 
         loadProject = () => {
-            eventEmitter.emit("LOAD");
+            eventEmitter.emit("LOAD",this);
         }
     }
 
     class Section extends List {
-        constructor(name) {
-            super(name);
+        constructor() {
+            super();
         }
     }
 
@@ -146,14 +159,10 @@ const App = (function () {
         }
     }
 
+
+    const addProjectBtn = document.querySelector("#addProjectBtn");
+    console.log(addProjectBtn)
+    addProjectBtn.addEventListener("click",()=>eventEmitter.emit("CREATE_PROJECKT"))
     
-    
-    
-    
-    
-    
-    
-    
-    InitializeView.projectHolder.appendChild(new Project("jack").dom);
 
 })();
