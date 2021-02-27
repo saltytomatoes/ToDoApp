@@ -62,23 +62,44 @@ const InitializeView = (function () {
 // 
 const App = (function () {
 
+    let projectMonitor = {
+        dom: InitializeView.projectMonitor,
+    }
+
+
+
+
     let eventEmitter = new EventEmitter("CombineHolderAndDisplayer");
 
     //new project is created
     eventEmitter.on("CREATE_PROJECKT",() => {
-        InitializeView.projectHolder.appendChild(new Project().dom);
+        
+        let proj = new Project();
+        let ts1 = new Task("task1","none",proj.name,"27.2.2021");
+        let sc1 = new Section();
+        sc1.addComponent(ts1);
+        sc1.addComponent(ts1);
+        sc1.addComponent(ts1);
+        proj.addComponent(ts1);
+        proj.addComponent(sc1);
+        proj.addComponent(ts1);
+        proj.setTaskAmount();
+
+        InitializeView.projectHolder.appendChild(proj.dom);
     });
 
     //a project is selected to be displayed
     eventEmitter.on("LOAD",(project) => {
-        console.log(project.name + " is loaded!");
+        InitializeView.projectMonitor.appendChild(project.getMonitorDom());
     });
+
+
+
 
     class List {
         constructor() {
             this.name;
             this.components = [];
-
         }
 
         getTaskAmount = () => {
@@ -105,17 +126,17 @@ const App = (function () {
         }
     }
 
+
     class Project extends List {
         constructor() {
             super();
-
-            this.dom = this._createProjectDom();
+            this.dom = this._getHolderDom();
             this.dom.addEventListener("click",this.loadProject);
         }
 
         // returns a project representation div.
-        _createProjectDom= () => {
-            let main = strToHtml(`<div class="project"></div>`);
+        _getHolderDom = () => {
+            let main = strToHtml(`<div class="projectHolder"></div>`);
         
 
             let projectName = strToHtml(`<input type="text" placeholder="Choose a name"></input>`);
@@ -125,7 +146,7 @@ const App = (function () {
             });
 
 
-            let tasksInside = strToHtml(`<div class="tasksInside"></div>`);
+            let tasksInside = strToHtml(`<div class="tasksInside">${this.getTaskAmount()}</div>`);
     
             main.appendChild(projectName);
             main.appendChild(tasksInside);
@@ -133,36 +154,78 @@ const App = (function () {
             return main;
         }
 
+        //updates tasks amount monitor in holder
         setTaskAmount = () => {
             let tasksInside = this.dom.querySelector(".tasksInside");
             tasksInside.innerText = this.getTaskAmount();
         }
 
+        //fires when a project is clicked to be monitored
         loadProject = () => {
             eventEmitter.emit("LOAD",this);
         }
+
+        getMonitorDom = () => {
+            let dom = strToHtml(`<div class="projectMonitor"></div>`);
+            this.components.forEach(component => {
+                dom.appendChild(component.getMonitorDom());
+            });
+            
+           return dom; 
+        }
     }
+
 
     class Section extends List {
         constructor() {
             super();
         }
+
+        getMonitorDom = () => {
+            let dom = strToHtml(`<div class="sectionMonitor">
+                                <div class="title">${this.name}</div>
+                                <hr>
+                                </div>`);
+            this.components.forEach(component => {
+                dom.appendChild(component.getMonitorDom());
+            });
+            
+           return dom; 
+        }
     }
 
+    
     class Task {
         constructor(title,description,project,deadline) {
             this.title = title;
             this.description = description;
             this.project = project;
             this.deadline = deadline;
-            this.isDone = false;
+        }
+
+        getMonitorDom = () => {
+            let div = strToHtml(`<div class="task">
+                                    <div class=flexStart>
+                                        <input type="checkbox"></input>
+                                        <div class="title">${this.title}</div>
+                                    </div>
+                                    <div class="date">${this.deadline}</div>
+                                    <div class="operations">
+                                        <div class="edit"></div>
+                                        <div class="delete"></div>
+                                    </div>
+                                 </div>`);
+
+            return div;
         }
     }
 
 
-    const addProjectBtn = document.querySelector("#addProjectBtn");
-    console.log(addProjectBtn)
-    addProjectBtn.addEventListener("click",()=>eventEmitter.emit("CREATE_PROJECKT"))
+
+
+
+    const addProjectBtn = document.querySelector("#addProjectBtn")
+                        .addEventListener("click",( )=> eventEmitter.emit("CREATE_PROJECKT"));
     
 
 })();

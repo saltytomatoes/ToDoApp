@@ -140,8 +140,8 @@ hr {
 
 
 
-/*project related*/
-.project {
+/*project Holder related*/
+.projectHolder {
     height: 60px;
     width: 90%;
     margin: auto;
@@ -162,9 +162,13 @@ hr {
     border-radius: 5px;
     align-self: center;
     margin-right: 10%;
+
+    color: var(--neonblue);
+    text-align: center;
+    font-size: 20px;
 }
 
-.project input {
+.projectHolder input {
     margin-left: 10%;
     font-size: 20px;
     color: var(--vampire);
@@ -172,4 +176,68 @@ hr {
     border: none;
     outline: none;
 }
+/*-----------------------------------*/
+
+
+/* project monitor related*/
+
+.sectionMonitor {
+    width: 90%;
+    border-radius: 10px;
+    background-color: white;
+    margin: auto;
+}
+
+.task {
+    width: 90%;
+    height: 60px;
+    border-radius: 10px;
+    background-color: white;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task input[type="checkbox"] {
+    margin-left: 2%;
+}
+
+.sectionMonitor .task{
+    width: 100%;
+}
+
+.task .flexStart {
+    display: flex;
+    margin-left: 2%;
+}
+
+.task .operations {
+    width: 63px;
+    height: 30px;
+    margin-right: 2%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.task .delete {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: var(--vampire);
+}
+
+.task .edit {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    background-color: var(--vampire);
+}
+
+.task .date {
+    color : red;
+}
+
 /*-----------------------------------*/
