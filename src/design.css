@@ -162,10 +162,12 @@ hr {
     margin-right: 10%;
 }
 
-.project h2 {
+.project input {
     margin-left: 10%;
     font-size: 20px;
     color: var(--vampire);
     font-weight: 900;
+    border: none;
+    outline: none;
 }
 /*-----------------------------------*/

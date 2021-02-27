@@ -62,6 +62,8 @@ const InitializeView = (function () {
 // 
 const App = (function () {
 
+    let eventEmitter = new EventEmitter("CombineHolderAndDisplayer");
+
     class List {
         constructor(name) {
             this.name = name;
@@ -72,12 +74,18 @@ const App = (function () {
         getTaskAmount = () => {
             let amount = 0;
             this.components.forEach(component => {
-                //in case the component is of type section
-                if(component.constructor == Section) 
-                    amount += component.getTaskAmount();
-                
-                if(component.constructor == Task)
-                    amount++;
+
+                    switch (component.constructor) {
+                        case Task:
+                            amount++;
+                            break;
+                        case Section:
+                            amount += component.getTaskAmount();
+                            break;
+                        default:
+                            console.error(`invalid component!: ${component}`);
+                    }
+
             });
             return amount;
         }
@@ -85,20 +93,25 @@ const App = (function () {
         addComponent = (component) => {
             this.components.push(component);
         }
-    }////////////////
-
+    }
 
     class Project extends List {
         constructor(name) {
             super(name);
+
             this.dom = this._createProjectDom();
+            this.dom.addEventListener("click",this.loadProject);
         }
 
         // returns a project representation div.
         _createProjectDom= () => {
             let main = strToHtml(`<div class="project"></div>`);
         
-            let projectName = strToHtml(`<h2>${this.name}</h2>`);
+            let projectName = strToHtml(`<input type="text" placeholder="Choose a name"></input>`);
+            projectName.addEventListener("blur",(e)=>{
+                console.log(e.target.value)
+            });
+
             let tasksInside = strToHtml(`<div class="tasksInside"></div>`);
     
             main.appendChild(projectName);
@@ -106,8 +119,16 @@ const App = (function () {
                 
             return main;
         }
-    }
 
+        setTaskAmount = () => {
+            let tasksInside = this.dom.querySelector(".tasksInside");
+            tasksInside.innerText = this.getTaskAmount();
+        }
+
+        loadProject = () => {
+            eventEmitter.emit("LOAD");
+        }
+    }
 
     class Section extends List {
         constructor(name) {
