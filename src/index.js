@@ -237,6 +237,8 @@ const App = (function () {
         constructor() {
             super();
             this.setInitialTask();
+
+            this.title;
         }
 
         getMonitorDom = () => {
@@ -257,6 +259,16 @@ const App = (function () {
             this.components.forEach(component => {
                 dom.appendChild(component.getMonitorDom());
             });
+
+
+
+            let title = dom.querySelector(`input[type="text"]`);
+            title.addEventListener("blur", () => {
+                this.title = title.value;
+            });
+
+            if(this.title)
+                title.value = this.title;
 
             return dom;
         }
