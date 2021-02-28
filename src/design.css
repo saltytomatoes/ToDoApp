@@ -181,6 +181,40 @@ hr {
 
 /* project monitor related*/
 
+#projectMonitor .topBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#projectMonitor .title{
+    margin-left: 10%;
+}
+
+#buttonHolder {
+    display: flex;
+    margin-right: 10%;
+}
+
+.button {
+    background-color: var(--neonblue);
+    height: 30px;
+    border-radius: 5px;
+    line-height: 30px;
+    padding: 5px;
+    margin-left: 15px;
+    transition: .1s;
+}
+
+.button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 13px var(--neonblue);
+}
+
+.button:active {
+    transform: scale(1);
+}
+
 .sectionMonitor {
     width: 90%;
     border-radius: 10px;

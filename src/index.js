@@ -36,7 +36,14 @@ const InitializeView = (function () {
 
     const projectMonitor = strToHtml(`
                                         <div id="projectMonitor" class="subdiv">
+                                        <div class="topBar">
                                             <h1 class="title">--proj name--</h1>
+                                            <div id="buttonHolder">
+                                                <div class="button">+Task</div>
+                                                <div class="button">+Section</div>
+                                            </div>
+                                        </div>
+                                            
                                             <hr>
                                         </div>`
                                     );
@@ -63,36 +70,40 @@ const InitializeView = (function () {
 const App = (function () {
 
     let projectMonitor = {
-        dom: InitializeView.projectMonitor,
+        currDisplay: undefined,
+
+        clear: function() {
+            if(this.currDisplay != undefined)
+                InitializeView.projectMonitor.removeChild(InitializeView.projectMonitor.lastElementChild);
+        },
+
+        renameTitle: function(str) {
+            let monitorTitle = document.querySelector("#projectMonitor .title");
+            monitorTitle.innerText = str;
+        }
     }
-
-
 
 
     let eventEmitter = new EventEmitter("CombineHolderAndDisplayer");
 
     //new project is created
     eventEmitter.on("CREATE_PROJECKT",() => {
-        
-        let proj = new Project();
-        let ts1 = new Task("task1","none",proj.name,"27.2.2021");
-        let sc1 = new Section();
-        sc1.addComponent(ts1);
-        sc1.addComponent(ts1);
-        sc1.addComponent(ts1);
-        proj.addComponent(ts1);
-        proj.addComponent(sc1);
-        proj.addComponent(ts1);
-        proj.setTaskAmount();
-
-        InitializeView.projectHolder.appendChild(proj.dom);
+        InitializeView.projectHolder.appendChild(new Project().dom);
     });
 
     //a project is selected to be displayed
     eventEmitter.on("LOAD",(project) => {
+        projectMonitor.clear();
+        projectMonitor.currDisplay = project;
+        projectMonitor.renameTitle(project.name);
         InitializeView.projectMonitor.appendChild(project.getMonitorDom());
     });
 
+    eventEmitter.on("RENAMED",(project) => {
+        if(projectMonitor.currDisplay == project || projectMonitor.currDisplay == undefined) {
+            projectMonitor.renameTitle(project.name);
+        }
+    });
 
 
 
@@ -132,6 +143,8 @@ const App = (function () {
             super();
             this.dom = this._getHolderDom();
             this.dom.addEventListener("click",this.loadProject);
+            this._setInitialTask();
+            this.setTaskAmount();
         }
 
         // returns a project representation div.
@@ -143,6 +156,7 @@ const App = (function () {
             //The name is changable 
             projectName.addEventListener("blur",(e)=>{
                 this.name = e.target.value;
+                eventEmitter.emit("RENAMED",this);
             });
 
 
@@ -172,6 +186,10 @@ const App = (function () {
             });
             
            return dom; 
+        }
+
+        _setInitialTask = () => {
+            this.components.push( new Task() )
         }
     }
 
@@ -219,9 +237,6 @@ const App = (function () {
             return div;
         }
     }
-
-
-
 
 
     const addProjectBtn = document.querySelector("#addProjectBtn")
