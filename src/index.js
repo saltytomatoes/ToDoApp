@@ -101,6 +101,7 @@ const App = (function () {
 
     eventEmitter.on("RELOAD",() => {
         projectMonitor.clear();
+        projectMonitor.currDisplay.setTaskAmount();
         InitializeView.projectMonitor.appendChild(projectMonitor.currDisplay.getMonitorDom());
     });
 
@@ -112,7 +113,7 @@ const App = (function () {
 
     eventEmitter.on("ADD_TASK", () => {
         if (projectMonitor.currDisplay != undefined) {
-            projectMonitor.currDisplay.addComponent(new Task());
+            projectMonitor.currDisplay.addComponent(new Task( projectMonitor.currDisplay ));
             projectMonitor.currDisplay.setTaskAmount();
             eventEmitter.emit("LOAD", projectMonitor.currDisplay);
         }
@@ -127,12 +128,20 @@ const App = (function () {
         }
     });
 
+    eventEmitter.on("DELETE_TASK",(taskToDelete) => {
+        taskToDelete.parent.deleteComponent(taskToDelete);
+        projectMonitor.currDisplay.setTaskAmount();
+        eventEmitter.emit("LOAD", projectMonitor.currDisplay);
+    });
+
+
+
+
 
     class List {
         constructor() {
             this.name;
             this.components = [];
-            this.setInitialTask();
         }
 
         getTaskAmount = () => {
@@ -158,17 +167,23 @@ const App = (function () {
             this.components.push(component);
         }
 
-        setInitialTask = () => {
-            this.components.push(new Task())
+        deleteComponent = (component) => {
+            for(let i = 0; i < this.components.length; i++) {
+                if(this.components[i] == component) {
+                    this.components.splice(i,1);
+                    break;
+                }
+
+            }
         }
     }
-
 
     class Project extends List {
         constructor() {
             super();
             this.dom = this._getHolderDom();
             this.dom.addEventListener("click", this.loadProject);
+            this.setInitialTask();
             this.setTaskAmount();
         }
 
@@ -212,12 +227,16 @@ const App = (function () {
 
             return dom;
         }
-    }
 
+        setInitialTask = () => {
+            this.components.push(new Task(this))
+        }
+    }
 
     class Section extends List {
         constructor() {
             super();
+            this.setInitialTask();
         }
 
         getMonitorDom = () => {
@@ -229,9 +248,9 @@ const App = (function () {
                                 <hr>
                                 </div>`);
 
-            let btn = dom.querySelector(".addTaskBtn");
+            let btn = dom.querySelector(".addTaskBtn"); 
             btn.addEventListener("click",()=>{
-                this.addComponent(new Task());
+                this.addComponent(new Task( this ));
                 eventEmitter.emit("RELOAD");
             });
 
@@ -241,11 +260,15 @@ const App = (function () {
 
             return dom;
         }
+
+        setInitialTask = () => {
+            this.components.push(new Task(this))
+        }
     }
 
-
     class Task {
-        constructor() {    
+        constructor(parent) {   
+            this.parent = parent; 
         }
 
         getMonitorDom = () => {
@@ -257,6 +280,9 @@ const App = (function () {
                                     <input type="date"></input>
                                     <div class="delete notTxt">-</div>
                                  </div>`);
+
+            let del = div.querySelector(".delete");
+            del.addEventListener("click",() => eventEmitter.emit("DELETE_TASK",this));
 
 
             return div;
