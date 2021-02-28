@@ -269,6 +269,10 @@ const App = (function () {
     class Task {
         constructor(parent) {   
             this.parent = parent; 
+
+            this.taskDone = false;
+            this.title;
+            this.deadline;
         }
 
         getMonitorDom = () => {
@@ -281,8 +285,41 @@ const App = (function () {
                                     <div class="delete notTxt">-</div>
                                  </div>`);
 
+
             let del = div.querySelector(".delete");
             del.addEventListener("click",() => eventEmitter.emit("DELETE_TASK",this));
+
+            let box = div.querySelector(`input[type="checkbox"]`);
+            box.addEventListener("click",() => {
+                div.classList.toggle("taskDone");
+                this.taskDone = true;
+            });
+
+            let title = div.querySelector(`input[type="text"]`);
+            title.addEventListener("blur",() => {
+                this.title = title.value;
+            });
+
+            let deadline = div.querySelector(`input[type="date"]`);
+            deadline.addEventListener("blur",() => {
+                this.deadline = "" + deadline.value;
+            });
+
+
+
+
+            if(this.taskDone) {
+                box.checked = true;
+                div.classList.toggle("taskDone");
+            }  
+            if(this.title)
+                title.value = this.title;
+
+            if(this.deadline)
+                deadline.value = this.deadline;
+
+
+
 
 
             return div;

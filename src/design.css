@@ -328,4 +328,8 @@ input[type="date"] {
 .addTaskBtn:active {
     transform: scale(1);
 }
+
+.taskDone {
+    text-decoration: line-through;
+}
 /*----------------------------------*/
