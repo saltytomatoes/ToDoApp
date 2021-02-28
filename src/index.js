@@ -39,8 +39,8 @@ const InitializeView = (function () {
                                         <div class="topBar">
                                             <h1 class="title">--proj name--</h1>
                                             <div id="buttonHolder">
-                                                <div class="button">+Task</div>
-                                                <div class="button">+Section</div>
+                                                <div class="button" id="newTask">+Task</div>
+                                                <div class="button" id="newSection">+Section</div>
                                             </div>
                                         </div>
                                             
@@ -105,6 +105,12 @@ const App = (function () {
         }
     });
 
+    eventEmitter.on("ADD_TASK",() => {
+        if(projectMonitor.currDisplay != undefined) {
+            projectMonitor.currDisplay.addComponent( new Task() );
+            eventEmitter.emit("LOAD",projectMonitor.currDisplay);
+        }
+    });
 
 
     class List {
@@ -240,7 +246,9 @@ const App = (function () {
 
 
     const addProjectBtn = document.querySelector("#addProjectBtn")
-                        .addEventListener("click",( )=> eventEmitter.emit("CREATE_PROJECKT"));
+                        .addEventListener("click",( ) => eventEmitter.emit("CREATE_PROJECKT"));
     
+    const addTask = document.querySelector("#newTask")
+                        .addEventListener("click",() => eventEmitter.emit("ADD_TASK"));
 
 })();
