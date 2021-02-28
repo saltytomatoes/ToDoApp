@@ -46,7 +46,7 @@ const InitializeView = (function () {
                                             
                                             <hr>
                                         </div>`
-                                    );
+    );
 
 
     const mainHolder = strToHtml(`<div id="mainHolder"></div>`);
@@ -72,12 +72,12 @@ const App = (function () {
     let projectMonitor = {
         currDisplay: undefined,
 
-        clear: function() {
-            if(this.currDisplay != undefined)
+        clear: function () {
+            if (this.currDisplay != undefined)
                 InitializeView.projectMonitor.removeChild(InitializeView.projectMonitor.lastElementChild);
         },
 
-        renameTitle: function(str) {
+        renameTitle: function (str) {
             let monitorTitle = document.querySelector("#projectMonitor .title");
             monitorTitle.innerText = str;
         }
@@ -87,28 +87,36 @@ const App = (function () {
     let eventEmitter = new EventEmitter("CombineHolderAndDisplayer");
 
     //new project is created
-    eventEmitter.on("CREATE_PROJECKT",() => {
+    eventEmitter.on("CREATE_PROJECKT", () => {
         InitializeView.projectHolder.appendChild(new Project().dom);
     });
 
     //a project is selected to be displayed
-    eventEmitter.on("LOAD",(project) => {
+    eventEmitter.on("LOAD", (project) => {
         projectMonitor.clear();
         projectMonitor.currDisplay = project;
         projectMonitor.renameTitle(project.name);
         InitializeView.projectMonitor.appendChild(project.getMonitorDom());
     });
 
-    eventEmitter.on("RENAMED",(project) => {
-        if(projectMonitor.currDisplay == project || projectMonitor.currDisplay == undefined) {
+    eventEmitter.on("RENAMED", (project) => {
+        if (projectMonitor.currDisplay == project || projectMonitor.currDisplay == undefined) {
             projectMonitor.renameTitle(project.name);
         }
     });
 
-    eventEmitter.on("ADD_TASK",() => {
-        if(projectMonitor.currDisplay != undefined) {
-            projectMonitor.currDisplay.addComponent( new Task() );
-            eventEmitter.emit("LOAD",projectMonitor.currDisplay);
+    eventEmitter.on("ADD_TASK", () => {
+        if (projectMonitor.currDisplay != undefined) {
+            projectMonitor.currDisplay.addComponent(new Task());
+            eventEmitter.emit("LOAD", projectMonitor.currDisplay);
+        }
+    });
+
+    eventEmitter.on("ADD_SECTION", () => {
+        console.log("added");
+        if (projectMonitor.currDisplay != undefined) {
+            projectMonitor.currDisplay.addComponent(new Section());
+            eventEmitter.emit("LOAD", projectMonitor.currDisplay);
         }
     });
 
@@ -117,22 +125,23 @@ const App = (function () {
         constructor() {
             this.name;
             this.components = [];
+            this.setInitialTask();
         }
 
         getTaskAmount = () => {
             let amount = 0;
             this.components.forEach(component => {
 
-                    switch (component.constructor) {
-                        case Task:
-                            amount++;
-                            break;
-                        case Section:
-                            amount += component.getTaskAmount();
-                            break;
-                        default:
-                            console.error(`invalid component!: ${component}`);
-                    }
+                switch (component.constructor) {
+                    case Task:
+                        amount++;
+                        break;
+                    case Section:
+                        amount += component.getTaskAmount();
+                        break;
+                    default:
+                        console.error(`invalid component!: ${component}`);
+                }
 
             });
             return amount;
@@ -141,6 +150,10 @@ const App = (function () {
         addComponent = (component) => {
             this.components.push(component);
         }
+
+        setInitialTask = () => {
+            this.components.push(new Task())
+        }
     }
 
 
@@ -148,29 +161,28 @@ const App = (function () {
         constructor() {
             super();
             this.dom = this._getHolderDom();
-            this.dom.addEventListener("click",this.loadProject);
-            this._setInitialTask();
+            this.dom.addEventListener("click", this.loadProject);
             this.setTaskAmount();
         }
 
         // returns a project representation div.
         _getHolderDom = () => {
             let main = strToHtml(`<div class="projectHolder"></div>`);
-        
+
 
             let projectName = strToHtml(`<input type="text" placeholder="Choose a name"></input>`);
             //The name is changable 
-            projectName.addEventListener("blur",(e)=>{
+            projectName.addEventListener("blur", (e) => {
                 this.name = e.target.value;
-                eventEmitter.emit("RENAMED",this);
+                eventEmitter.emit("RENAMED", this);
             });
 
 
             let tasksInside = strToHtml(`<div class="tasksInside">${this.getTaskAmount()}</div>`);
-    
+
             main.appendChild(projectName);
             main.appendChild(tasksInside);
-                
+
             return main;
         }
 
@@ -182,7 +194,7 @@ const App = (function () {
 
         //fires when a project is clicked to be monitored
         loadProject = () => {
-            eventEmitter.emit("LOAD",this);
+            eventEmitter.emit("LOAD", this);
         }
 
         getMonitorDom = () => {
@@ -190,12 +202,8 @@ const App = (function () {
             this.components.forEach(component => {
                 dom.appendChild(component.getMonitorDom());
             });
-            
-           return dom; 
-        }
 
-        _setInitialTask = () => {
-            this.components.push( new Task() )
+            return dom;
         }
     }
 
@@ -213,14 +221,14 @@ const App = (function () {
             this.components.forEach(component => {
                 dom.appendChild(component.getMonitorDom());
             });
-            
-           return dom; 
+
+            return dom;
         }
     }
 
-    
+
     class Task {
-        constructor(title,description,project,deadline) {
+        constructor(title, description, project, deadline) {
             this.title = title;
             this.description = description;
             this.project = project;
@@ -246,9 +254,13 @@ const App = (function () {
 
 
     const addProjectBtn = document.querySelector("#addProjectBtn")
-                        .addEventListener("click",( ) => eventEmitter.emit("CREATE_PROJECKT"));
-    
+        .addEventListener("click", () => eventEmitter.emit("CREATE_PROJECKT"));
+
     const addTask = document.querySelector("#newTask")
-                        .addEventListener("click",() => eventEmitter.emit("ADD_TASK"));
+        .addEventListener("click", () => eventEmitter.emit("ADD_TASK"));
+
+    const addSection = document.querySelector("#newSection")
+        .addEventListener("click", () => eventEmitter.emit("ADD_SECTION"));
+
 
 })();
