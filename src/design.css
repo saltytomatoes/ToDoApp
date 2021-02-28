@@ -187,7 +187,7 @@ hr {
     justify-content: space-between;
 }
 
-#projectMonitor .title{
+.titleMargin {
     margin-left: 10%;
 }
 
@@ -256,22 +256,76 @@ hr {
     justify-content: space-between;
 }
 
+
+
+
+
 .task .delete {
     width: 30px;
     height: 30px;
     border-radius: 5px;
-    background-color: var(--vampire);
+    background-color: red;
+    box-shadow: inset 0 0 8px black;
+    text-align: center;
+    line-height: 30px;
+    font-size: 35px;
+    margin-right: 2%;
 }
 
-.task .edit {
-    width: 30px;
-    height: 30px;
-    border-radius: 5px;
-    background-color: var(--vampire);
+.task .delete:hover {
+    transform: scale(1.1);
+    box-shadow: inset 0 0 8px black,
+                0 0 13px red;
 }
+
+.task .delete:active {
+    transform: scale(1);
+}
+
+
+
+
+
 
 .task .date {
     color : red;
 }
 
-/*-----------------------------------*/
+.taskdes{
+    outline: none;
+    border: none;
+} 
+
+input[type="date"] {
+    outline: none;
+    border: none;
+}
+
+
+.sectionTitle {
+    padding: 20px 0;
+    margin-left: 2%;
+    outline: none;
+    border: none;
+    font-size: 20px;
+}
+
+.addTaskBtn {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 20px;
+    background-color: var(--neonblue);
+    border-radius: 5px;
+    margin-right: 2%;
+}
+
+.addTaskBtn:hover {
+    transform: scale(1.1);
+    box-shadow:  0 0 13px var(--neonblue);
+}
+
+.addTaskBtn:active {
+    transform: scale(1);
+}
+/*----------------------------------*/

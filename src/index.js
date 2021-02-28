@@ -37,7 +37,7 @@ const InitializeView = (function () {
     const projectMonitor = strToHtml(`
                                         <div id="projectMonitor" class="subdiv">
                                         <div class="topBar">
-                                            <h1 class="title">--proj name--</h1>
+                                            <h1 class="title titleMargin">Select a project</h1>
                                             <div id="buttonHolder">
                                                 <div class="button" id="newTask">+Task</div>
                                                 <div class="button" id="newSection">+Section</div>
@@ -99,6 +99,11 @@ const App = (function () {
         InitializeView.projectMonitor.appendChild(project.getMonitorDom());
     });
 
+    eventEmitter.on("RELOAD",() => {
+        projectMonitor.clear();
+        InitializeView.projectMonitor.appendChild(projectMonitor.currDisplay.getMonitorDom());
+    });
+
     eventEmitter.on("RENAMED", (project) => {
         if (projectMonitor.currDisplay == project || projectMonitor.currDisplay == undefined) {
             projectMonitor.renameTitle(project.name);
@@ -108,6 +113,7 @@ const App = (function () {
     eventEmitter.on("ADD_TASK", () => {
         if (projectMonitor.currDisplay != undefined) {
             projectMonitor.currDisplay.addComponent(new Task());
+            projectMonitor.currDisplay.setTaskAmount();
             eventEmitter.emit("LOAD", projectMonitor.currDisplay);
         }
     });
@@ -116,6 +122,7 @@ const App = (function () {
         console.log("added");
         if (projectMonitor.currDisplay != undefined) {
             projectMonitor.currDisplay.addComponent(new Section());
+            projectMonitor.currDisplay.setTaskAmount();
             eventEmitter.emit("LOAD", projectMonitor.currDisplay);
         }
     });
@@ -215,9 +222,19 @@ const App = (function () {
 
         getMonitorDom = () => {
             let dom = strToHtml(`<div class="sectionMonitor">
-                                <div class="title">${this.name}</div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <input type="text" class="title sectionTitle" placeholder="Choose title"></input>
+                                        <div class="addTaskBtn notTxt">&nbsp;+</div>
+                                    </div>
                                 <hr>
                                 </div>`);
+
+            let btn = dom.querySelector(".addTaskBtn");
+            btn.addEventListener("click",()=>{
+                this.addComponent(new Task());
+                eventEmitter.emit("RELOAD");
+            });
+
             this.components.forEach(component => {
                 dom.appendChild(component.getMonitorDom());
             });
@@ -228,25 +245,19 @@ const App = (function () {
 
 
     class Task {
-        constructor(title, description, project, deadline) {
-            this.title = title;
-            this.description = description;
-            this.project = project;
-            this.deadline = deadline;
+        constructor() {    
         }
 
         getMonitorDom = () => {
             let div = strToHtml(`<div class="task">
                                     <div class=flexStart>
                                         <input type="checkbox"></input>
-                                        <div class="title">${this.title}</div>
+                                        <input type="text" class="taskdes" placeholder="choose title"></input>
                                     </div>
-                                    <div class="date">${this.deadline}</div>
-                                    <div class="operations">
-                                        <div class="edit"></div>
-                                        <div class="delete"></div>
-                                    </div>
+                                    <input type="date"></input>
+                                    <div class="delete notTxt">-</div>
                                  </div>`);
+
 
             return div;
         }
